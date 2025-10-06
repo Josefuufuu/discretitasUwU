@@ -5,12 +5,12 @@ GRAMMAR = r'''
 Space: /[ \t\r\n]+/;
 ignore: Space;
 
-terminal HASHTAG: /#[A-Za-z0-9_]+/;
-terminal MENTION: /@[A-Za-z0-9_]+/;
-terminal LINK: /(https?:\/\/\S+)/;
-terminal WORD: /[^@#\$\*\-_\/~\s][^@#\$\*\-_\/~]*/;
-terminal EMOJI: /[\U0001F300-\U0001FAFF]/;
-terminal FORMULABODY: /[^$]+/;
+HASHTAG: /#[A-Za-z0-9_]+/;
+MENTION: /@[A-Za-z0-9_]+/;
+LINK: /(https?:\/\/\S+)/;
+WORD: /[^@#\$\*\-_\/~\s][^@#\$\*\-_\/~]*/;
+EMOJI: /[\U0001F300-\U0001FAFF]/;
+FORMULABODY: /[^$]+/;
 
 Post:
     text=Text
