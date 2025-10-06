@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from typing import Tuple, Any
 from textx import metamodel_from_str, TextXSyntaxError
 
@@ -77,6 +78,16 @@ _flip_map = str.maketrans(
 )
 
 def _render_inline(inline_parts) -> str:
+    if hasattr(inline_parts, 'parts'):
+        inline_parts = inline_parts.parts
+
+    if inline_parts is None:
+        inline_parts = []
+    elif isinstance(inline_parts, (str, bytes)):
+        inline_parts = [inline_parts]
+    elif not isinstance(inline_parts, Iterable):
+        inline_parts = [inline_parts]
+
     out = []
     for p in inline_parts:
         name = p.__class__.__name__
