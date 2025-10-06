@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Moderation Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+        margin: 0;
+        padding: 0 0 2rem;
+      }
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+      form.card, section.card {
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        margin-bottom: 1.5rem;
+      }
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+      textarea {
+        width: 100%;
+        min-height: 150px;
+        padding: 0.75rem;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        resize: vertical;
+        font-size: 1rem;
+      }
+      button {
+        margin-top: 1rem;
+        padding: 0.75rem 1.25rem;
+        background-color: #2c7be5;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #1a5fb4;
+      }
+      .badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        color: #fff;
+        margin-left: 0.5rem;
+      }
+      .badge-safe {
+        background-color: #2eb85c;
+      }
+      .badge-violation {
+        background-color: #e55353;
+      }
+      pre {
+        background: #f0f4f8;
+        padding: 1rem;
+        border-radius: 6px;
+        overflow-x: auto;
+      }
+      ul {
+        padding-left: 1.25rem;
+      }
+      .preview {
+        background: #fdf2d9;
+        padding: 1rem;
+        border-radius: 6px;
+        border: 1px solid #f5c16c;
+      }
+      .empty {
+        color: #666;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Moderation Dashboard</h1>
+      <form method="post" class="card">
+        <label for="post_text">Post text</label>
+        <textarea id="post_text" name="post_text" placeholder="Enter the content you want to review...">{{ post_text }}</textarea>
+        <button type="submit">Analyze post</button>
+      </form>
+
+      {% if result %}
+        {% set classification = result.classification %}
+        {% set classification_details = classification.details %}
+        {% set classifier_meta = classification_details.details %}
+        {% set transformation = result.transformation %}
+        <section class="card">
+          <h2>Original Post</h2>
+          <pre>{{ result.original_post | e }}</pre>
+        </section>
+
+        <section class="card">
+          <h2>
+            Classification
+            {% set is_safe = (classification.status == 'Safe') %}
+            <span class="badge {{ 'badge-safe' if is_safe else 'badge-violation' }}">{{ classification.status }}</span>
+          </h2>
+          <ul>
+            <li>Hate language: {{ 'Yes' if classification_details.hate else 'No' }}</li>
+            <li>Offensive language: {{ 'Yes' if classification_details.offensive else 'No' }}</li>
+            <li>Spam indicators: {{ 'Yes' if classification_details.spam else 'No' }}</li>
+            <li>Links detected: {{ classifier_meta.counts.links }}</li>
+            <li>Hashtags detected: {{ classifier_meta.counts.hashtags }}</li>
+          </ul>
+          <p><strong>Token stream:</strong> {{ classifier_meta.tokens | join(' ') }}</p>
+          <p><strong>Symbol stream:</strong> {{ classifier_meta.symbols | join(' ') }}</p>
+        </section>
+
+        <section class="card">
+          <h2>Transformation</h2>
+          <p><strong>Masked text:</strong> {{ transformation.transformed_text }}</p>
+          <p>
+            <strong>Masked tokens:</strong>
+            {% if transformation.masked_tokens %}
+              {{ transformation.masked_tokens | join(', ') }}
+            {% else %}
+              <span class="empty">No tokens were masked.</span>
+            {% endif %}
+          </p>
+          <p><strong>Categories:</strong> {{ transformation.categories | join(' ') }}</p>
+          <div>
+            <strong>Suggestions:</strong>
+            {% if transformation.suggestions %}
+              <ul>
+                {% for suggestion in transformation.suggestions %}
+                  <li>{{ suggestion }}</li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="empty">No suggestions generated.</p>
+            {% endif %}
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Validation</h2>
+          <p><strong>Status:</strong> {{ result.validation.status }}</p>
+          {% if result.validation.error %}
+            <p><strong>Error:</strong> {{ result.validation.error }}</p>
+          {% else %}
+            <p class="empty">No validation errors detected.</p>
+          {% endif %}
+        </section>
+
+        <section class="card">
+          <h2>Preview</h2>
+          {% if result.preview %}
+            <div class="preview">{{ result.preview | safe }}</div>
+          {% else %}
+            <p class="empty">Preview is unavailable for this post.</p>
+          {% endif %}
+        </section>
+      {% endif %}
+    </div>
+  </body>
+</html>
