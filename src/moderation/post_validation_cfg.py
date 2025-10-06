@@ -8,7 +8,8 @@ ignore: Space;
 HASHTAG: /#[A-Za-z0-9_]+/;
 MENTION: /@[A-Za-z0-9_]+/;
 LINK: /(https?:\/\/\S+)/;
-WORD: /[A-Za-z0-9]+/;
+WORD: /[A-Za-z]+[A-Za-z0-9]*/;
+NUMBER: /[0-9]+/;
 EMOJI: /[\U0001F300-\U0001FAFF]/;
 FORMULABODY: /[^$]+/;
 
@@ -30,7 +31,7 @@ LinkList:
     links+=Link+
 ;
 
-Part: Mention | Enhancement | Word | Emoji;
+Part: Mention | Enhancement | Word | Number | Emoji;
 
 Enhancement:
       Italic
@@ -48,12 +49,13 @@ AltFont:     '//' content=Inline '//' ;
 UpsideDown:  '~'  content=Inline '~' ;
 Formula:     '$'  expr=FORMULABODY '$' ;
 
-Inline: (Word | Emoji | Mention)+;
+Inline: (Word | Number | Emoji | Mention)+;
 
 Hashtag: token=HASHTAG;
 Link:    token=LINK;
 Mention: token=MENTION;
 Word:    token=WORD;
+Number:  token=NUMBER;
 Emoji:   token=EMOJI;
 '''
 
@@ -78,7 +80,7 @@ def _render_inline(inline_parts) -> str:
     out = []
     for p in inline_parts:
         name = p.__class__.__name__
-        if name == 'Word' or name == 'Emoji' or name == 'Mention':
+        if name in {'Word', 'Number', 'Emoji', 'Mention'}:
             out.append(p.token)
         else:
             out.append(str(p))
@@ -88,7 +90,7 @@ def render_preview(model) -> str:
     rendered = []
     for part in model.text.parts:
         name = part.__class__.__name__
-        if name == 'Word':
+        if name in {'Word', 'Number'}:
             rendered.append(part.token)
         elif name == 'Emoji':
             rendered.append(part.token)
