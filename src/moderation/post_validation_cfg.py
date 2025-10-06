@@ -8,7 +8,7 @@ ignore: Space;
 HASHTAG: /#[A-Za-z0-9_]+/;
 MENTION: /@[A-Za-z0-9_]+/;
 LINK: /(https?:\/\/\S+)/;
-WORD: /[^@#\$\*\-_\/~\s][^@#\$\*\-_\/~]*/;
+WORD: /[A-Za-z0-9]+/;
 EMOJI: /[\U0001F300-\U0001FAFF]/;
 FORMULABODY: /[^$]+/;
 
