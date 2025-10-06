@@ -57,7 +57,7 @@ def transform(post: str) -> TransformResult:
     for tok, sym in zip(tokens, symbols):
         if sym in {"HATE", "OFFENSIVE"}:
             out.append("***")
-            masked.append(tok)
+            masked.append(tok.lower())
         else:
             out.append(tok)
 

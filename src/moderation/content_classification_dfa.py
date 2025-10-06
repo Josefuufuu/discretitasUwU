@@ -61,13 +61,14 @@ def preprocess(text: str):
 # 2) Map tokens into a small alphabet
 def categorize(token: str) -> str:
     # URLs and hashtags first 
-    if token.startswith("http") or token.startswith("www."):
+    lowered = token.lower()
+    if lowered.startswith("http") or lowered.startswith("www."):
         return "LINK"
-    if token.startswith("#"):
+    if lowered.startswith("#"):
         return "HASHTAG"
 
     # for example if gets: "idiot!" -> "idiot", "(stupid)" -> "stupid"
-    core = re.sub(r"^[^\w]+|[^\w]+$", "", token)
+    core = re.sub(r"^[^\w]+|[^\w]+$", "", lowered)
 
     if core in HATE_KEYWORDS:
         return "HATE"
