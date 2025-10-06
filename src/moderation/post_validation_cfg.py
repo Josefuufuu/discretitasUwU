@@ -71,7 +71,7 @@ def validate_post(text: str) -> Tuple[bool, Any]:
 
 _flip_map = str.maketrans(
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
-    "ɐqɔpǝɟƃɥᴉɾʞʅɯuodbɹsʇnʌʍxʎz∀qƆpƎℲפHΙſʞ⅂WNOԀΌᴚS⊥∩ΛMXʎZ⇂ᘔƐᘠട0"
+    "ɐqɔpǝɟƃɥᴉɾʞʅɯuodbɹsʇnʌʍxʎz∀qƆpƎℲפHΙſʞ⅂WNOԀΌᴚS⊥∩ΛMXʎZ⇂ᘔƐㄣϛ9ㄥ860"
 )
 
 def _render_inline(inline_parts) -> str:
