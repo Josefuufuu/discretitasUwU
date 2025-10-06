@@ -2,8 +2,11 @@ from typing import Tuple, Any
 from textx import metamodel_from_str, TextXSyntaxError
 
 GRAMMAR = r'''
-Space: /[ \t\r\n]+/;
-ignore: Space;
+Post:
+    text=Text
+    hashtag_list=HashtagList?
+    link_list=LinkList?
+;
 
 HASHTAG: /#[A-Za-z0-9_]+/;
 MENTION: /@[A-Za-z0-9_]+/;
@@ -12,12 +15,6 @@ WORD: /[A-Za-z]+[A-Za-z0-9]*/;
 NUMBER: /[0-9]+/;
 EMOJI: /[\U0001F300-\U0001FAFF]/;
 FORMULABODY: /[^$]+/;
-
-Post:
-    text=Text
-    hashtag_list=HashtagList?
-    link_list=LinkList?
-;
 
 Text:
     parts+=Part+
@@ -57,6 +54,9 @@ Mention: token=MENTION;
 Word:    token=WORD;
 Number:  token=NUMBER;
 Emoji:   token=EMOJI;
+
+Space: /[ \t\r\n]+/;
+ignore: Space;
 '''
 
 _mm = metamodel_from_str(GRAMMAR)
