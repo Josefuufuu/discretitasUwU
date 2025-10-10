@@ -43,3 +43,13 @@ def test_render_preview_upside_down():
 
     expected = "Hello123".translate(_flip_map)[::-1]
     assert expected in preview
+
+
+def test_render_preview_formula_escapes_html():
+    txt = "$<script>alert(1)</script>$"
+    ok, model = validate_post(txt)
+    assert ok is True
+
+    preview = render_preview(model)
+
+    assert "$ &lt;script&gt;alert(1)&lt;/script&gt; $" in preview

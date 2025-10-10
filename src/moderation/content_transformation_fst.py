@@ -35,7 +35,8 @@ class TransformResult:
 def transform(post: str) -> TransformResult:
     if _HAVE_CLASSIFIER:
         rep = classify(post)
-        tokens = rep.details["tokens"]
+        raw_tokens = rep.details["tokens"]
+        tokens = [t.lower() for t in raw_tokens]
         symbols = rep.details["symbols"]
         links = rep.details["counts"]["links"]
         hashtags = rep.details["counts"]["hashtags"]
@@ -45,6 +46,7 @@ def transform(post: str) -> TransformResult:
     else:
         norm = re.sub(r'\s+', ' ', post.lower()).strip()
         tokens = norm.split()
+        raw_tokens = tokens
         symbols = [categorize(t) for t in tokens]
         links = sum(1 for s in symbols if s == "LINK")
         hashtags = sum(1 for s in symbols if s == "HASHTAG")
@@ -74,7 +76,7 @@ def transform(post: str) -> TransformResult:
         masked_tokens=masked,
         suggestions=suggestions,
         categories=symbols,
-        original_tokens=tokens,
+        original_tokens=raw_tokens,
     )
 
 def _cli():
