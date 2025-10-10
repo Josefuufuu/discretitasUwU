@@ -1,4 +1,5 @@
 from collections.abc import Iterable
+from html import escape as html_escape
 from typing import Tuple, Any
 from textx import metamodel_from_str, TextXSyntaxError
 
@@ -119,7 +120,7 @@ def render_preview(model) -> str:
             txt = _render_inline(part.content)
             rendered.append(txt.translate(_flip_map)[::-1])
         elif name == 'Formula':
-            rendered.append(f"$ {part.expr} $")
+            rendered.append(f"$ {html_escape(part.expr)} $")
         else:
             rendered.append(str(part))
 
